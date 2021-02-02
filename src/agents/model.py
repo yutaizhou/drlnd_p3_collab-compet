@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from .utils import centralize
+
 def hidden_init(layer):
     fan_in = layer.weight.data.size()[0]
     lim = 1. / np.sqrt(fan_in)
@@ -44,13 +46,9 @@ class Critic(nn.Module):
     
     def forward(self, states, actions):
         """Q-Value critic"""
-        full_state = self._centralize(states, actions)
+        full_state = centralize(states, actions)
         x = F.relu(self.fc1(full_state))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
 
-    @staticmethod
-    def _centralize(state, actions):
-
-        return None

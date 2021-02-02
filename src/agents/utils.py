@@ -1,6 +1,13 @@
 import random
 import copy
 import numpy as np
+import torch
+
+def centralize(states, actions):
+    states = states.flatten(start_dim=1)
+    actions = actions.flatten(start_dim=1)
+    full_states = torch.cat([states, actions], dim=1)
+    return full_states
 
 class OUNoise:
     """Ornstein-Uhlenbeck process."""

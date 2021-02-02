@@ -8,7 +8,7 @@ from .utils import agent_batch_dim_swap, centralize
 
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 32        # minibatch size
+BATCH_SIZE = 128        # minibatch size
 NUM_BATCH = 1
 GAMMA = 0.95            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
@@ -48,6 +48,7 @@ class MADDPG():
         if (self.t % TRAIN_FREQ == 0) & (len(self.memory) >= BATCH_SIZE * NUM_BATCH):
             experiences = self.memory.sample(NUM_BATCH)
             self._learn(experiences, GAMMA)
+        self._network_update(TAU)
         self.t += 1
     
     def _learn(self, experiences, gamma):        
@@ -61,14 +62,23 @@ class MADDPG():
 
                 Q_current = agent.critic_target(states, actions)
 
-                critic_loss = F.mse(Q_current, Q_target)
+                critic_loss = F.mse_loss(Q_current, Q_target)
                 agent.critic_opt.zero_grad()
                 critic_loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.critic_local.parameters(),1)
+                torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(),1)
                 agent.critic_opt.step()
 
                 # update actor
+                actions_pred = torch.tensor(self.act(states, use_noise=False)).to(DEVICE)
+                actor_loss = -agent.critic_local(states, actions_pred).mean()
+                agent.actor_opt.zero_grad()
+                actor_loss.backward()
+                agent.actor_opt.step()
 
     def reset(self):
         [agent.noise.reset() for agent in self.agents]
+    
+    def _network_update(self, tau):
+        [agent._network_update(agent.critic_local, agent.critic_target, tau) for agent in self.agents]
+        [agent._network_update(agent.actor_local, agent.actor_target, tau) for agent in self.agents]
 

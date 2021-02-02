@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from tqdm import trange
 from unityagents import UnityEnvironment
 
-from src.agents.agent import DDPG
+from src.agents.maddpg import MADDPG
 from src.utils.utils import Logger
 from src.utils.typing import List
 
@@ -20,7 +20,7 @@ def rollout(agent, env: UnityEnvironment, is_training: bool = True):
         actions = agent.act(states, is_training)
 
         env_info = env.step(actions)[brain_name]
-        next_states, rewards, dones = env_info.vector_observations, np.array(env_info.rewards), np.array(env_info.local_done)
+        actions, next_states, rewards, dones = np.array(actions), env_info.vector_observations, np.array(env_info.rewards), np.array(env_info.local_done)
         ended = False not in dones
         agent.step(states, actions, rewards, next_states, dones)
         states = next_states
@@ -71,9 +71,8 @@ if __name__ == "__main__":
 
 
     # set up agent
+    num_agents, state_size = env_info.vector_observations.shape
     action_size = brain.vector_action_space_size
-    state_size = len(env_info.vector_observations[0])
-    num_agents = len(env_info.agents)
 
     algorithms = {'MADDPG': MADDPG}
     algorithm = algorithms[args.algorithm]

@@ -1,11 +1,14 @@
 import torch
+import torch.nn.functional as F
+
+from ..utils.utils import DEVICE
 from .ddpg import DDPG
 from .replay import ReplayBuffer
-from .utils import centralize 
+from .utils import agent_batch_dim_swap, centralize 
 
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 256        # minibatch size
+BATCH_SIZE = 32        # minibatch size
 NUM_BATCH = 1
 GAMMA = 0.95            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
@@ -49,9 +52,22 @@ class MADDPG():
     
     def _learn(self, experiences, gamma):        
         for states, actions, rewards, next_states, dones in zip(*[torch.split(tensor, BATCH_SIZE) for tensor in experiences]):
+            states, actions, rewards, next_states, dones = agent_batch_dim_swap(states, actions, rewards, next_states, dones)
+            for agent, state, action, reward, next_state, done in zip(self.agents, states, actions, rewards, next_states, dones):
+                # update critic
+                next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
+                Q_target_nexts = agent.critic_target(next_states, next_actions)
+                Q_target = reward + gamma * (1 - done) * Q_target_nexts
 
-            states_full = centralize(states, actions)
+                Q_current = agent.critic_target(states, actions)
 
+                critic_loss = F.mse(Q_current, Q_target)
+                agent.critic_opt.zero_grad()
+                critic_loss.backward()
+                torch.nn.utils.clip_grad_norm_(self.critic_local.parameters(),1)
+                agent.critic_opt.step()
+
+                # update actor
 
     def reset(self):
         [agent.noise.reset() for agent in self.agents]

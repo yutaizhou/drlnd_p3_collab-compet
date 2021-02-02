@@ -11,9 +11,6 @@ from ..utils.utils import DEVICE
 
 class DDPG():
     def __init__(self, state_size, action_size, num_agents, lr_actor, lr_critic, weight_decay_critic, random_seed=42):
-        state_size = state_size
-        action_size = action_size
-        full_state_size = (state_size + action_size) * num_agents
         self.seed = random.seed(random_seed)
 
         # Actor w/ target
@@ -22,6 +19,7 @@ class DDPG():
         self.actor_opt = optim.Adam(self.actor_local.parameters(), lr=lr_actor)
     
         # Critic w/ target 
+        full_state_size = (state_size + action_size) * num_agents
         self.critic_local = Critic(full_state_size, seed=random_seed).to(DEVICE)
         self.critic_target = Critic(full_state_size, seed=random_seed).to(DEVICE)
         self.critic_opt = optim.Adam(self.critic_local.parameters(), lr=lr_critic, weight_decay=weight_decay_critic)
@@ -34,7 +32,9 @@ class DDPG():
 
     
     def act(self, state, use_target=False, use_noise=True):
-        state = torch.from_numpy(state).float().to(DEVICE)
+        if not isinstance(state, torch.Tensor):
+            state = torch.from_numpy(state)
+        state = state.float().to(DEVICE)
 
         actor = self.actor_local if not use_target else self.actor_target
         actor.eval()

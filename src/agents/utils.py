@@ -9,6 +9,14 @@ def centralize(states, actions):
     full_states = torch.cat([states, actions], dim=1)
     return full_states
 
+def agent_batch_dim_swap(states, actions, rewards, next_states, dones):
+    states = states.permute(1,0,-1)
+    actions = actions.permute(1,0,-1)
+    rewards = rewards.permute(1,0)
+    next_states = next_states.permute(1,0,-1)
+    dones = dones.permute(1,0) 
+    return states, actions, rewards, next_states, dones
+
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 

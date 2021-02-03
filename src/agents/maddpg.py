@@ -82,3 +82,10 @@ class MADDPG():
         [agent._network_update(agent.critic_local, agent.critic_target, tau) for agent in self.agents]
         [agent._network_update(agent.actor_local, agent.actor_target, tau) for agent in self.agents]
 
+    def save(self, fp):
+        models = {}
+        for i, agent in enumerate(self.agents):
+            models[f'agent_{i}_actor'] = agent.actor_local.state_dict()
+            models[f'agent_{i}_critic'] = agent.critic_local.state_dict()
+        torch.save(models, fp)
+

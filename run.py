@@ -47,12 +47,12 @@ def run(agent, agent_name, env: UnityEnvironment, num_episodes=10000, is_trainin
             
             if i_episode % 100 == 0:
                 logger.write(f'Episode {i_episode}/{num_episodes} | Max Average Score: {max_avg_score}\n')
-            if max_avg_score >= 30 and not solved:
+            if max_avg_score >= 0.5 and not solved:
                 logger.write(f'Task solved in {i_episode} episodes, with average score over the last 100 episode: {max_avg_score}\n')
                 solved = True
+                agent.save(f'results/{agent_name}/checkpoint.pth')
 
     logger.close()
-    agent.save(f'results/{agent_name}/checkpoint.pth')
     with open(f'results/{agent_name}/scores.npy', 'wb') as f:
         np.save(f, scores)
     return scores

@@ -48,7 +48,6 @@ class MADDPG():
         if (self.t % TRAIN_FREQ == 0) & (len(self.memory) >= BATCH_SIZE * NUM_BATCH):
             experiences = self.memory.sample(NUM_BATCH)
             self._learn(experiences, GAMMA)
-        self._network_update(TAU)
         self.t += 1
     
     def _learn(self, experiences, gamma):        
@@ -57,15 +56,15 @@ class MADDPG():
             for agent, state, action, reward, next_state, done in zip(self.agents, states, actions, rewards, next_states, dones):
                 # update critic
                 next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
-                Q_target_nexts = agent.critic_target(next_states, next_actions)
+                Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze().detach()
                 Q_target = reward + gamma * (1 - done) * Q_target_nexts
 
-                Q_current = agent.critic_target(states, actions)
+                Q_current = agent.critic_target(states, actions).squeeze()
 
                 critic_loss = F.mse_loss(Q_current, Q_target)
                 agent.critic_opt.zero_grad()
                 critic_loss.backward()
-                torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(),1)
+                torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(), 1)
                 agent.critic_opt.step()
 
                 # update actor
@@ -73,7 +72,9 @@ class MADDPG():
                 actor_loss = -agent.critic_local(states, actions_pred).mean()
                 agent.actor_opt.zero_grad()
                 actor_loss.backward()
+                torch.nn.utils.clip_grad_norm_(agent.actor_local.parameters(), 1)
                 agent.actor_opt.step()
+            self._network_update(TAU)
 
     def reset(self):
         [agent.noise.reset() for agent in self.agents]

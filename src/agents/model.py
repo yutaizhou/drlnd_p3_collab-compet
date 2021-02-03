@@ -46,12 +46,11 @@ class Critic(nn.Module):
     
     def forward(self, states, actions):
         """Q-Value critic"""
-        # full_state = centralize(states, actions)
         states = states.permute(1,0,-1).flatten(1)
         actions = actions.permute(1,0,-1).flatten(1)
         full_state = torch.cat([states, actions], dim=1)
         x = F.relu(self.fc1(full_state))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
-        return x.squeeze()
+        return x
 

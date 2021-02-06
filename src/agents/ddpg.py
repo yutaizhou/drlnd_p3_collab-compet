@@ -41,9 +41,13 @@ class DDPG():
         with torch.no_grad():
             action = actor(state).cpu().data.numpy()
         actor.train()
-        
-        action += use_noise * self.noise.sample()
+
+        if use_noise:
+            action += self.noise.sample()
         return np.clip(action, -1, +1)
+    
+    def reset(self):
+        self.noise.reset()
 
     @staticmethod
     def _network_update(local_model, target_model, tau):

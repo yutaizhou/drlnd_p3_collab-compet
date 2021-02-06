@@ -7,15 +7,15 @@ from .replay import ReplayBuffer
 from .utils import agent_batch_dim_swap, centralize 
 
 
-BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
+BUFFER_SIZE = int(1e5)  # replay buffer size
+BATCH_SIZE = 256        # minibatch size
 NUM_BATCH = 1
 GAMMA = 0.95            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
 LR_CRITIC = 1e-3        # learning rate of the critic
 TAU = 1e-3              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
-TRAIN_FREQ = 20         # update net work every this many time steps
+TRAIN_FREQ = 1         # update net work every this many time steps
 
 class MADDPG():
     def __init__(self, state_size, action_size, num_agents, seed=37):
@@ -59,7 +59,7 @@ class MADDPG():
                 Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze().detach()
                 Q_target = reward + gamma * (1 - done) * Q_target_nexts
 
-                Q_current = agent.critic_target(states, actions).squeeze()
+                Q_current = agent.critic_local(states, actions).squeeze()
 
                 critic_loss = F.mse_loss(Q_current, Q_target)
                 agent.critic_opt.zero_grad()
@@ -77,7 +77,7 @@ class MADDPG():
             self._network_update(TAU)
 
     def reset(self):
-        [agent.noise.reset() for agent in self.agents]
+        [agent.reset() for agent in self.agents]
     
     def _network_update(self, tau):
         [agent._network_update(agent.critic_local, agent.critic_target, tau) for agent in self.agents]

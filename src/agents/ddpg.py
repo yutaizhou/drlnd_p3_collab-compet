@@ -5,7 +5,7 @@ import torch
 import torch.optim as optim
 
 from .model import Actor, Critic
-from .utils import OUNoise
+from .utils import GaussianNoise, OUNoise
 from ..utils.utils import DEVICE
 
 
@@ -29,9 +29,10 @@ class DDPG():
         self._network_update(self.critic_local, self.critic_target, 1)
 
         self.noise = OUNoise(action_size, random_seed)
+        # self.noise = GaussianNoise(action_size)
 
     
-    def act(self, state, use_target=False, use_noise=True):
+    def act(self, state, use_target=False, use_noise=True, noise_scale=1):
         if not isinstance(state, torch.Tensor):
             state = torch.from_numpy(state)
         state = state.float().to(DEVICE)
@@ -43,7 +44,7 @@ class DDPG():
         actor.train()
 
         if use_noise:
-            action += self.noise.sample()
+            action += noise_scale * self.noise.sample()
         return np.clip(action, -1, +1)
     
     def reset(self):

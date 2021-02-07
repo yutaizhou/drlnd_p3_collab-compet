@@ -7,15 +7,17 @@ from .replay import ReplayBuffer
 from .utils import agent_batch_dim_swap, centralize 
 
 
-BUFFER_SIZE = int(1e5)  # replay buffer size
+BUFFER_SIZE = int(1e6)  # replay buffer size
 BATCH_SIZE = 256        # minibatch size
-NUM_BATCH = 1
-GAMMA = 0.95            # discount factor
+NUM_BATCH = 2
+GAMMA = 0.99            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
 LR_CRITIC = 1e-3        # learning rate of the critic
-TAU = 1e-3              # for soft update of target parameters
+TAU = 1e-2              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
+
+NOISE_DECAY = 0.993
 
 class MADDPG():
     def __init__(self, state_size, action_size, num_agents, seed=37):
@@ -38,9 +40,13 @@ class MADDPG():
         )
 
         self.t = 0
+        self.noise_scale = 1
+
+    def decay_noise(self, noise_decay=NOISE_DECAY):
+        self.noise_scale *= noise_decay
 
     def act(self, states, use_target=False, use_noise=True):
-        actions = [agent.act(state, use_target, use_noise) for agent, state in zip(self.agents, states)]
+        actions = [agent.act(state, use_target, use_noise, self.noise_scale) for agent, state in zip(self.agents, states)]
         return actions
 
     def step(self, states, actions, rewards, next_states, dones):

@@ -17,7 +17,7 @@ TAU = 1e-2              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
 
-NOISE_DECAY = 0.993
+NOISE_DECAY = 0.995
 
 class MADDPG():
     def __init__(self, state_size, action_size, num_agents, seed=37):
@@ -54,6 +54,9 @@ class MADDPG():
         if (self.t % TRAIN_FREQ == 0) & (len(self.memory) >= BATCH_SIZE * NUM_BATCH):
             experiences = self.memory.sample(NUM_BATCH)
             self._learn(experiences, GAMMA)
+        
+        if False not in dones:
+            self.decay_noise()
         self.t += 1
     
     def _learn(self, experiences, gamma):        

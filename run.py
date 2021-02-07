@@ -26,7 +26,6 @@ def rollout(agent, env: UnityEnvironment, is_training: bool = True):
         states = next_states
         total_reward += rewards
 
-    agent.decay_noise()
     return total_reward.max()
 
 

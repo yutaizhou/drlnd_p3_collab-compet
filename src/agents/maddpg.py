@@ -12,12 +12,13 @@ BATCH_SIZE = 256        # minibatch size
 NUM_BATCH = 1
 GAMMA = 0.99            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
-LR_CRITIC = 1e-3        # learning rate of the critic
+LR_CRITIC = 3e-4        # learning rate of the critic
 TAU = 1e-3              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
 
-NOISE_DECAY = 0.995
+NOISE_DECAY = 0.99
+NOISE_END = 0.1
 
 class MADDPG():
     def __init__(self, state_size, action_size, num_agents, seed=37):
@@ -43,7 +44,7 @@ class MADDPG():
         self.noise_scale = 1
 
     def decay_noise(self, noise_decay=NOISE_DECAY):
-        self.noise_scale *= noise_decay
+        self.noise_scale = max(self.noise_scale * noise_decay, NOISE_END)
 
     def act(self, states, use_target=False, use_noise=True):
         actions = [agent.act(state, use_target, use_noise, self.noise_scale) for agent, state in zip(self.agents, states)]
@@ -60,9 +61,10 @@ class MADDPG():
         self.t += 1
     
     def _learn(self, experiences, gamma):        
-        for states, actions, rewards, next_states, dones in zip(*[torch.split(tensor, BATCH_SIZE) for tensor in experiences]):
-            states, actions, rewards, next_states, dones = agent_batch_dim_swap(states, actions, rewards, next_states, dones)
-            for agent, state, action, reward, next_state, done in zip(self.agents, states, actions, rewards, next_states, dones):
+        for b_states, b_actions, b_rewards, b_next_states, b_dones in zip(*[torch.split(tensor, BATCH_SIZE) for tensor in experiences]):
+            states, actions, rewards, next_states, dones = agent_batch_dim_swap(b_states, b_actions, b_rewards, b_next_states, b_dones)
+            for i, agent in enumerate(self.agents):
+                reward, done = rewards[i,:], dones[i,:]
                 # update critic
                 next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
                 Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze()

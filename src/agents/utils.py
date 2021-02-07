@@ -42,7 +42,7 @@ class OUNoise:
         return self.state
 
 class GaussianNoise:
-    def __init__(self, dim: int, mu=0., sigma=0.2):
+    def __init__(self, dim: int, mu=0, sigma=0.2):
         self.dim = dim
         self.mu = mu
         self.sigma = sigma

@@ -20,7 +20,7 @@ def agent_batch_dim_swap(states, actions, rewards, next_states, dones):
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, seed, mu=0., theta=0.15, sigma=1):
+    def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.1):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta
@@ -35,17 +35,17 @@ class OUNoise:
     def sample(self):
         """Update internal state and return it as a noise sample."""
         x = self.state
+        # dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
         dx = self.theta * (self.mu - x) + self.sigma * np.random.uniform(low=-1, high=1, size=self.mu.shape)
         # dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(*self.mu.shape)
         self.state = x + dx
         return self.state
 
 class GaussianNoise:
-    def __init__(self, dim: int, mu=0., sigma=0.45, scale=1.2):
+    def __init__(self, dim: int, mu=0., sigma=0.45):
         self.dim = dim
         self.mu = mu
         self.sigma = sigma
-        self.scale = scale
 
     def sample(self):
-        return self.scale * np.random.normal(self.mu, self.sigma, self.dim)
+        return np.random.normal(self.mu, self.sigma, self.dim)

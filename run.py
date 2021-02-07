@@ -17,7 +17,7 @@ def rollout(agent, env: UnityEnvironment, is_training: bool = True):
     total_reward = 0
     ended = False
     while not ended:
-        actions = agent.act(states, is_training)
+        actions = agent.act(states)
 
         env_info = env.step(actions)[brain_name]
         actions, next_states, rewards, dones = np.array(actions), env_info.vector_observations, np.array(env_info.rewards), np.array(env_info.local_done)
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     algorithm = algorithms[args.algorithm]
     agent = algorithm(state_size, action_size, num_agents)
 
-    scores = run(agent, args.algorithm, env, num_episodes=100000)
+    scores = run(agent, args.algorithm, env, num_episodes=10000)
 
     # plot the scores
     fig = plt.figure()

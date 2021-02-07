@@ -28,8 +28,8 @@ class DDPG():
         self._network_update(self.actor_local, self.actor_target, 1)
         self._network_update(self.critic_local, self.critic_target, 1)
 
-        # self.noise = OUNoise(action_size, random_seed)
-        self.noise = GaussianNoise(action_size)
+        self.noise = OUNoise(action_size, random_seed)
+        # self.noise = GaussianNoise(action_size)
 
     
     def act(self, state, use_target=False, use_noise=True, noise_scale=1):

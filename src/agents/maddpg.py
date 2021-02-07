@@ -4,16 +4,16 @@ import torch.nn.functional as F
 from ..utils.utils import DEVICE
 from .ddpg import DDPG
 from .replay import ReplayBuffer
-from .utils import agent_batch_dim_swap, centralize 
+from .utils import agent_batch_dim_swap
 
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
 BATCH_SIZE = 256        # minibatch size
-NUM_BATCH = 2
+NUM_BATCH = 1
 GAMMA = 0.99            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
 LR_CRITIC = 1e-3        # learning rate of the critic
-TAU = 1e-2              # for soft update of target parameters
+TAU = 1e-3              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
 
@@ -70,8 +70,8 @@ class MADDPG():
 
                 Q_current = agent.critic_local(states, actions).squeeze()
 
-                # critic_loss = F.mse_loss(Q_current, Q_target.detach())
-                critic_loss = F.smooth_l1_loss(Q_current, Q_target.detach())
+                critic_loss = F.mse_loss(Q_current, Q_target.detach())
+                # critic_loss = F.smooth_l1_loss(Q_current, Q_target.detach())
                 agent.critic_opt.zero_grad()
                 critic_loss.backward()
                 torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(), 1)
@@ -84,7 +84,10 @@ class MADDPG():
                 actor_loss.backward()
                 torch.nn.utils.clip_grad_norm_(agent.actor_local.parameters(), 1)
                 agent.actor_opt.step()
-            self._network_update(TAU)
+
+                agent._network_update(agent.critic_local, agent.critic_target, TAU)
+                agent._network_update(agent.actor_local, agent.actor_target, TAU)
+            # self._network_update(TAU)
 
     def reset(self):
         [agent.reset() for agent in self.agents]

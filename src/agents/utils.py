@@ -46,6 +46,9 @@ class GaussianNoise:
         self.dim = dim
         self.mu = mu
         self.sigma = sigma
+    
+    def reset(self):
+        pass
 
     def sample(self):
         return np.random.normal(self.mu, self.sigma, self.dim)

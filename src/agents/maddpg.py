@@ -66,23 +66,22 @@ class MADDPG():
         for i, agent in enumerate(self.agents):
             reward, done = rewards[i,:], dones[i,:]
             # update critic
-            next_actions = torch.stack([agent.actor_target(next_state) for next_state in next_states]).to(DEVICE)
-            # next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
+            # next_actions = torch.stack([agent.actor_target(next_state) for next_state in next_states]).to(DEVICE)
+            next_actions = torch.stack([a.actor_target(next_state) for a, next_state in zip(self.agents, next_states)]).to(DEVICE)
             Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze()
             Q_target = reward + gamma * (1 - done) * Q_target_nexts
 
             Q_current = agent.critic_local(states, actions).squeeze()
 
             critic_loss = F.mse_loss(Q_current, Q_target)
-            # critic_loss = F.smooth_l1_loss(Q_current, Q_target.detach())
             agent.critic_opt.zero_grad()
             critic_loss.backward()
             torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(), 1)
             agent.critic_opt.step()
 
             # update actor
-            actions_pred = torch.stack([agent.actor_local(state) for state in states]).to(DEVICE)
-            # actions_pred = torch.tensor(self.act(states, use_noise=False)).to(DEVICE)
+            # actions_pred = torch.stack([agent.actor_local(state) for state in states]).to(DEVICE)
+            actions_pred = torch.stack([a.actor_local(state) for a, state in zip(self.agents, states)]).to(DEVICE)
             actor_loss = -agent.critic_local(states, actions_pred).mean()
             agent.actor_opt.zero_grad()
             actor_loss.backward()

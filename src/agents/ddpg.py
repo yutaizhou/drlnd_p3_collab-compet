@@ -32,16 +32,13 @@ class DDPG():
         # self.noise = GaussianNoise(action_size)
 
     
-    def act(self, state, use_target=False, use_noise=True, noise_scale=1):
-        if not isinstance(state, torch.Tensor):
-            state = torch.from_numpy(state)
-        state = state.float().to(DEVICE)
+    def act(self, state, use_noise=True, noise_scale=1):
+        state = torch.from_numpy(state).float().to(DEVICE)
 
-        actor = self.actor_local if not use_target else self.actor_target
-        actor.eval()
+        self.actor_local.eval()
         with torch.no_grad():
-            action = actor(state).cpu().data.numpy()
-        actor.train()
+            action = self.actor_local(state).cpu().data.numpy()
+        self.actor_local.train()
 
         if use_noise:
             action += noise_scale * self.noise.sample()

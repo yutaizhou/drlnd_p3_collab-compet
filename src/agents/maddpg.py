@@ -46,8 +46,8 @@ class MADDPG():
     def decay_noise(self, noise_decay=NOISE_DECAY):
         self.noise_scale = max(self.noise_scale * noise_decay, NOISE_END)
 
-    def act(self, states, use_target=False, use_noise=True):
-        actions = [agent.act(state, use_target, use_noise, self.noise_scale) for agent, state in zip(self.agents, states)]
+    def act(self, states, use_noise=True):
+        actions = [agent.act(state, use_noise, self.noise_scale) for agent, state in zip(self.agents, states)]
         return actions
 
     def step(self, states, actions, rewards, next_states, dones):

@@ -36,8 +36,8 @@ class OUNoise:
         """Update internal state and return it as a noise sample."""
         x = self.state
         # dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
-        dx = self.theta * (self.mu - x) + self.sigma * np.random.uniform(low=-1, high=1, size=self.mu.shape)
-        # dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(*self.mu.shape)
+        # dx = self.theta * (self.mu - x) + self.sigma * np.random.uniform(low=-1, high=1, size=self.mu.shape)
+        dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(*self.mu.shape)
         self.state = x + dx
         return self.state
 

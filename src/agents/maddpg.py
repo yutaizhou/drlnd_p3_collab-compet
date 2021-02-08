@@ -7,17 +7,17 @@ from .replay import ReplayBuffer
 from .utils import agent_batch_dim_swap
 
 
-BUFFER_SIZE = int(1e6)  # replay buffer size
+BUFFER_SIZE = int(1e5)  # replay buffer size
 BATCH_SIZE = 256        # minibatch size
 NUM_BATCH = 1
 GAMMA = 0.99            # discount factor
 LR_ACTOR = 1e-4         # learning rate of the actor 
-LR_CRITIC = 3e-4        # learning rate of the critic
+LR_CRITIC = 1e-3        # learning rate of the critic
 TAU = 1e-3              # for soft update of target parameters
 WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
 
-NOISE_DECAY = 0.99
+NOISE_DECAY = 1
 NOISE_END = 0.1
 
 class MADDPG():
@@ -60,36 +60,38 @@ class MADDPG():
             self.decay_noise()
         self.t += 1
     
-    def _learn(self, experiences, gamma):        
-        for b_states, b_actions, b_rewards, b_next_states, b_dones in zip(*[torch.split(tensor, BATCH_SIZE) for tensor in experiences]):
-            states, actions, rewards, next_states, dones = agent_batch_dim_swap(b_states, b_actions, b_rewards, b_next_states, b_dones)
-            for i, agent in enumerate(self.agents):
-                reward, done = rewards[i,:], dones[i,:]
-                # update critic
-                next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
-                Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze()
-                Q_target = reward + gamma * (1 - done) * Q_target_nexts
+    def _learn(self, experiences, gamma):
+        b_states, b_actions, b_rewards, b_next_states, b_dones = experiences
+        states, actions, rewards, next_states, dones = agent_batch_dim_swap(b_states, b_actions, b_rewards, b_next_states, b_dones)
+        for i, agent in enumerate(self.agents):
+            reward, done = rewards[i,:], dones[i,:]
+            # update critic
+            next_actions = torch.stack([agent.actor_target(next_state) for next_state in next_states]).to(DEVICE)
+            # next_actions = torch.tensor(self.act(next_states, use_target=True, use_noise=False)).to(DEVICE)
+            Q_target_nexts = agent.critic_target(next_states, next_actions).squeeze()
+            Q_target = reward + gamma * (1 - done) * Q_target_nexts
 
-                Q_current = agent.critic_local(states, actions).squeeze()
+            Q_current = agent.critic_local(states, actions).squeeze()
 
-                critic_loss = F.mse_loss(Q_current, Q_target.detach())
-                # critic_loss = F.smooth_l1_loss(Q_current, Q_target.detach())
-                agent.critic_opt.zero_grad()
-                critic_loss.backward()
-                torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(), 1)
-                agent.critic_opt.step()
+            critic_loss = F.mse_loss(Q_current, Q_target)
+            # critic_loss = F.smooth_l1_loss(Q_current, Q_target.detach())
+            agent.critic_opt.zero_grad()
+            critic_loss.backward()
+            torch.nn.utils.clip_grad_norm_(agent.critic_local.parameters(), 1)
+            agent.critic_opt.step()
 
-                # update actor
-                actions_pred = torch.tensor(self.act(states, use_noise=False)).to(DEVICE)
-                actor_loss = -agent.critic_local(states, actions_pred).mean()
-                agent.actor_opt.zero_grad()
-                actor_loss.backward()
-                torch.nn.utils.clip_grad_norm_(agent.actor_local.parameters(), 1)
-                agent.actor_opt.step()
+            # update actor
+            actions_pred = torch.stack([agent.actor_local(state) for state in states]).to(DEVICE)
+            # actions_pred = torch.tensor(self.act(states, use_noise=False)).to(DEVICE)
+            actor_loss = -agent.critic_local(states, actions_pred).mean()
+            agent.actor_opt.zero_grad()
+            actor_loss.backward()
+            torch.nn.utils.clip_grad_norm_(agent.actor_local.parameters(), 1)
+            agent.actor_opt.step()
 
-                agent._network_update(agent.critic_local, agent.critic_target, TAU)
-                agent._network_update(agent.actor_local, agent.actor_target, TAU)
-            # self._network_update(TAU)
+            agent._network_update(agent.critic_local, agent.critic_target, TAU)
+            agent._network_update(agent.actor_local, agent.actor_target, TAU)
+        # self._network_update(TAU)
 
     def reset(self):
         [agent.reset() for agent in self.agents]

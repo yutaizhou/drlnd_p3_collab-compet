@@ -1,7 +1,7 @@
 ## Learning Algorithm
 
 ### Agent Architecture
-The **Multi-Agent Deep Deterministic Policy Gradient (MADDPG)** algorithm as described in the [2017 paper](maddpg_paper) is used to solve the task. It is an actor-critic algoritm applied in the multi-agent setting, and it has two types of deep neural networks (DNN) for each involved agent, one to represent the actor, and one for the critic. 
+The **Multi-Agent Deep Deterministic Policy Gradient (MADDPG)** algorithm as described in the [2017 paper][maddpg_paper] is used to solve the task. It is an actor-critic algoritm applied in the multi-agent setting, and it has two types of deep neural networks (DNN) for each involved agent, one to represent the actor, and one for the critic. 
 In this case, the critic variant is denoted as a centralized critic, as it takes in information from all agents in the environment during training, which is impossible to do during evaluation. The actor, on the other hand, only takes in information from the agent it belongs to. Hence, the MADDPG algorithm adopts a centralized training, decentralized execution (CTDE) strategy.
 
 The DNN used to approximation the Q function (centralized critic) is a simple 3 layer fully connected feedforward neural network. Since the state space, |S| = 24, the action space, |A| = 2, and there are 2 agents, the input size of the first layer is (24 + 2) * 2 = 52, The output size of the network is 1, since the centralized critic simply predicts the scalar Q-value of the given state and joint action from all agents. 

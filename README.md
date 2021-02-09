@@ -10,9 +10,7 @@ Action Space: Contiuous. 2 element vector that corresponds horizontal movement r
 
 Reward: An agent gains +0.1 reward if it hits the ball over the net, but loses -0.01 if it lets a ball reach the ground or hit the ball out of bounds. 
 
-Episodic task, where each episode is 1000 steps through the environment. 
-
-The task is considered solved when the meta-agent controlling both players gets an average score of +0.5 over 100 episodes. The score of an episode for a meta agent is taken as the maximum over the scores individually obtained by the two agents it controls.
+The episodic task is considered solved when the algorithm controlling both players gets an average score of +0.5 over 100 episodes. The score of an episode is taken as the maximum over the scores individually obtained by the two agents.
 
 Reward Structure:
 In this kind of multi-agent environments, the kind of reward signals provided by the environment can dictate whether the agents' optimal behavior that maximizes the rewards is cooperative, competitive, or mixed. In this case, where +0.1 is awarded for hitting the ball over a net, and only -0.01 is dealt as punishment for letting the ball hit the ground or go out of bounds, the agents will have much higher incentive to learn to keep the ball volleying back and forth.
@@ -34,11 +32,11 @@ conda activate drlnd
 
 **Instructions**
 
-At the time of writing (Jan 31, 2021), 1 algorithm has been implemented: DDPG.
+At the time of writing (Feb 8, 2021), 1 algorithm has been implemented: DDPG.
 
-To run DDPG without loading any weights, run the following:
+To run MADDPG without loading any weights, run the following:
 ```
-python run.py DDPG
+python run.py MDDDPG
 ```
 Note: unless the directory path has been changed in run.py, this will overwrite the previous results.
 

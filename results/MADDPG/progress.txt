@@ -1,0 +1,63 @@
+Progress for MADDPG agent
+Episode 100/6000 | Max Average Score: 0.0009 | Average Score: 0.0009
+ Episode 200/6000 | Max Average Score: 0.0009 | Average Score: 0.0000
+ Episode 300/6000 | Max Average Score: 0.0010 | Average Score: 0.0010
+ Episode 400/6000 | Max Average Score: 0.0010 | Average Score: 0.0000
+ Episode 500/6000 | Max Average Score: 0.0040 | Average Score: 0.0040
+ Episode 600/6000 | Max Average Score: 0.0090 | Average Score: 0.0080
+ Episode 700/6000 | Max Average Score: 0.0180 | Average Score: 0.0160
+ Episode 800/6000 | Max Average Score: 0.0200 | Average Score: 0.0130
+ Episode 900/6000 | Max Average Score: 0.0200 | Average Score: 0.0110
+ Episode 1000/6000 | Max Average Score: 0.0219 | Average Score: 0.0199
+ Episode 1100/6000 | Max Average Score: 0.0219 | Average Score: 0.0090
+ Episode 1200/6000 | Max Average Score: 0.0219 | Average Score: 0.0188
+ Episode 1300/6000 | Max Average Score: 0.0219 | Average Score: 0.0098
+ Episode 1400/6000 | Max Average Score: 0.0219 | Average Score: 0.0027
+ Episode 1500/6000 | Max Average Score: 0.0219 | Average Score: 0.0000
+ Episode 1600/6000 | Max Average Score: 0.0219 | Average Score: 0.0141
+ Episode 1700/6000 | Max Average Score: 0.0274 | Average Score: 0.0220
+ Episode 1800/6000 | Max Average Score: 0.0274 | Average Score: 0.0088
+ Episode 1900/6000 | Max Average Score: 0.0274 | Average Score: 0.0144
+ Episode 2000/6000 | Max Average Score: 0.0274 | Average Score: 0.0228
+ Episode 2100/6000 | Max Average Score: 0.0447 | Average Score: 0.0399
+ Episode 2200/6000 | Max Average Score: 0.0489 | Average Score: 0.0489
+ Episode 2300/6000 | Max Average Score: 0.0489 | Average Score: 0.0330
+ Episode 2400/6000 | Max Average Score: 0.0489 | Average Score: 0.0157
+ Episode 2500/6000 | Max Average Score: 0.0489 | Average Score: 0.0200
+ Episode 2600/6000 | Max Average Score: 0.0489 | Average Score: 0.0140
+ Episode 2700/6000 | Max Average Score: 0.0489 | Average Score: 0.0090
+ Episode 2800/6000 | Max Average Score: 0.0489 | Average Score: 0.0250
+ Episode 2900/6000 | Max Average Score: 0.0629 | Average Score: 0.0599
+ Episode 3000/6000 | Max Average Score: 0.0690 | Average Score: 0.0604
+ Episode 3100/6000 | Max Average Score: 0.0690 | Average Score: 0.0576
+ Episode 3200/6000 | Max Average Score: 0.1123 | Average Score: 0.1085
+ Episode 3300/6000 | Max Average Score: 0.1123 | Average Score: 0.1016
+ Episode 3400/6000 | Max Average Score: 0.1123 | Average Score: 0.0865
+ Episode 3500/6000 | Max Average Score: 0.1123 | Average Score: 0.1051
+ Episode 3600/6000 | Max Average Score: 0.1123 | Average Score: 0.1058
+ Episode 3700/6000 | Max Average Score: 0.1480 | Average Score: 0.1480
+ Episode 3800/6000 | Max Average Score: 0.1514 | Average Score: 0.1225
+ Episode 3900/6000 | Max Average Score: 0.1514 | Average Score: 0.1308
+ Episode 4000/6000 | Max Average Score: 0.1542 | Average Score: 0.1521
+ Episode 4100/6000 | Max Average Score: 0.1542 | Average Score: 0.1470
+ Episode 4200/6000 | Max Average Score: 0.1542 | Average Score: 0.1433
+ Episode 4300/6000 | Max Average Score: 0.1759 | Average Score: 0.1726
+ Episode 4400/6000 | Max Average Score: 0.1837 | Average Score: 0.1811
+ Episode 4500/6000 | Max Average Score: 0.1921 | Average Score: 0.1830
+ Episode 4600/6000 | Max Average Score: 0.2029 | Average Score: 0.2029
+ Episode 4700/6000 | Max Average Score: 0.2762 | Average Score: 0.2699
+ Episode 4800/6000 | Max Average Score: 0.3301 | Average Score: 0.3222
+ Episode 4900/6000 | Max Average Score: 0.3301 | Average Score: 0.2374
+ Episode 5000/6000 | Max Average Score: 0.3609 | Average Score: 0.3538
+ Task solved in 5032 episodes, with average score over the last 100 episode: 0.5079000076837837
+Episode 5100/6000 | Max Average Score: 0.6790 | Average Score: 0.6771
+ Episode 5200/6000 | Max Average Score: 0.7369 | Average Score: 0.6369
+ Episode 5300/6000 | Max Average Score: 0.7369 | Average Score: 0.3710
+ Episode 5400/6000 | Max Average Score: 0.7369 | Average Score: 0.6758
+ Episode 5500/6000 | Max Average Score: 0.7392 | Average Score: 0.5048
+ Episode 5600/6000 | Max Average Score: 0.7392 | Average Score: 0.7342
+ Episode 5700/6000 | Max Average Score: 0.7431 | Average Score: 0.4478
+ Episode 5800/6000 | Max Average Score: 0.7431 | Average Score: 0.5978
+ Episode 5900/6000 | Max Average Score: 0.7514 | Average Score: 0.7434
+ Episode 6000/6000 | Max Average Score: 0.8552 | Average Score: 0.6305
+ 

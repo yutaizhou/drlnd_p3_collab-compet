@@ -78,7 +78,7 @@ if __name__ == "__main__":
     algorithm = algorithms[args.algorithm]
     agent = algorithm(state_size, action_size, num_agents)
 
-    scores = run(agent, args.algorithm, env, num_episodes=10000)
+    scores = run(agent, args.algorithm, env, num_episodes=6000)
 
     # plot the scores
     fig = plt.figure()

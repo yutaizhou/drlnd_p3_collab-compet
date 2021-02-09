@@ -18,7 +18,6 @@ WEIGHT_DECAY = 0        # L2 weight decay
 TRAIN_FREQ = 1         # update net work every this many time steps
 
 NOISE_DECAY = 0.995
-# NOISE_END = 0.1
 
 class MADDPG():
     def __init__(self, state_size, action_size, num_agents, seed=37):
@@ -45,7 +44,6 @@ class MADDPG():
 
     def decay_noise(self, noise_decay=NOISE_DECAY):
         self.noise_scale = self.noise_scale * noise_decay
-        # self.noise_scale = max(self.noise_scale * noise_decay, NOISE_END)
 
     def act(self, states, use_noise=True):
         actions = [agent.act(state, use_noise, self.noise_scale) for agent, state in zip(self.agents, states)]

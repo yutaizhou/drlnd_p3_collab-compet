@@ -43,6 +43,7 @@ _Hyperparameters_
 ## Reward Plot
 
 ![Reward Plot][reward_plot]
+
 The task was solved in 5032 episodes.
 
 

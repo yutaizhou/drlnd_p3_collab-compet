@@ -11,7 +11,7 @@ The DNN used to approximation the policy (critic) is a simple 3 layer fully conn
 Instead of the Ornstein–Uhlenbeck Process proposed in the original paper, it was empirically found that simple Gaussian noise was enough to perturb the action space to encourage exploration. A noise scaling constant was introduced to encourage exploration in the earlier episodes, and to encourage exploitation in the later episodes.
 
 ### MADDPG: Extending DDPG to Multi-Agent Settings
-Although Deep Deterministic Policy Gradient (DDPG) is introduced in the [2015 paper](ddpg_paper) as an actor-critic algorithm, it is widely thought of as a continuous action space extension of the [DQN](dqn_paper) algorithm. For more information on DDPG theory, please refer to the [report](p2) of the second project. 
+Although Deep Deterministic Policy Gradient (DDPG) is introduced in the [2015 paper][ddpg_paper] as an actor-critic algorithm, it is widely thought of as a continuous action space extension of the [DQN][dqn_paper] algorithm. For more information on DDPG theory, please refer to the [report][p2] of the second project. 
 
 Many options are possible for extending DDPG into the multi-agent setting. The following are some of the most prominent ones. Note that the extensions apply to any single-agent RL algorithms, not just DDPG.
 
@@ -50,9 +50,9 @@ The task was solved in 5032 episodes.
 
 MADDPG could be combined with parameter sharing, more specifically, the centralized critic could be shared between all agents. 
 
-MADDPG is an actor-critic off-policy algorithm. [SAC](sac_paper) is yet another algorithm of this type that can be easily extended to the multiagent setting using centralized critic and parameter sharing. [PPO](ppo_paper) is a policy-based on-policy algorithm that can also be easily extended using similar means. 
+MADDPG is an actor-critic off-policy algorithm. [SAC][sac_paper] is yet another algorithm of this type that can be easily extended to the multiagent setting using centralized critic and parameter sharing. [PPO][ppo_paper] is a policy-based on-policy algorithm that can also be easily extended using similar means. 
 
-Attention combined with multi-agent RL is an interesting approach, as it uses the attention mechanism to reason about which agent to pay more attention to. E.g. Is agent 3 visiting a rare state? Use attention to give its value contribution higher weighting! [MAAC]([attn_paper]) explores this concept. 
+Attention combined with multi-agent RL is an interesting approach, as it uses the attention mechanism to reason about which agent to pay more attention to. E.g. Is agent 3 visiting a rare state? Use attention to give its value contribution higher weighting! [MAAC][attn_paper] explores this concept. 
 
 <!-- Links -->
 [reward_plot]: https://github.com/yutaizhou/drlnd_p3_collab-compet/blob/main/results/MADDPG/result.png
